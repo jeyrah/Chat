@@ -16,24 +16,26 @@ public class MainActivity extends AppCompatActivity {
     private Button mButtonSend;
     private EditText mEditTextMessage;
     private ListView mListViewMessages;
+    private Presenter mPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mPresenter = new Presenter(this);
+
         mButtonSend = (Button) findViewById(R.id.btnSend);
         mEditTextMessage = (EditText) findViewById(R.id.edtText);
         mListViewMessages = (ListView) findViewById(R.id.lsvMessages);
 
-        final List<String> list = new ArrayList<>();
-        final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(
-                                          this, android.R.layout.simple_list_item_1, list);
+        List<String> list = mPresenter.getListMessages();
+        final ArrayAdapter<String> listAdapter = mPresenter.setAdapter(list);
 
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                list.add(mEditTextMessage.getText().toString());
-                mListViewMessages.setAdapter(listAdapter);
+                mPresenter.addMessageToListMessages(mEditTextMessage.getText().toString());
+                mPresenter.changeListMessage(mListViewMessages, listAdapter);
             }
         });
     }
